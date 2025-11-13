@@ -1,32 +1,40 @@
 import java.util.*;
 
 class DynamicProgramming01 {
-    static int knapsack(int W, int[] weights, int[] values) {
-        int[] dp = new int[W + 1];
+    static int knapsack(int n, int m, int[] weights, int[] values) {
+        // Initialize 2D dp array (Already initialized to 0 by Java)
+        int[][] dp = new int[n + 1][m + 1];
 
-        for (int i = 1; i <= weights.length; i++) {
-            for (int j = W; j >= weights[i - 1]; j--) {
-                dp[j] = Math.max(dp[j], dp[j - weights[i - 1]] + values[i - 1]);
+        for (int i = 1; i <= n; i++) { // Gradually increase num of items considered
+            for (int w = 1; w <= m; w++) { // Gradually increase capacity
+                // If current item fits in knapsack decide to grab or skip it
+                if (weights[i] <= w) {
+                    int skipItem = dp[i - 1][w];
+                    int grabItem = dp[i - 1][w - weights[i]] + values[i];
+                    dp[i][w] = Math.max(skipItem, grabItem);
+                } else {
+                    // Can't include item in bag because too much weight, just copy from row above (i.e. Don't add item)
+                    dp[i][w] = dp[i - 1][w];
+                }
             }
         }
 
-        return dp[W];
+        return dp[n][m];
     }
 
     public static void main(String[] args) {
-        /*  Design an algorithm using dynamic
-            programming (if applicable). Pseudocode is needed. Will this algorithm
-            achieve optimal solution?
-        */
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt(); // Num of items
+        int m = in.nextInt(); // Weight capacity
+        int[] weights = new int[n + 1]; // Weights of each item
+        int[] values = new int[n + 1]; // Values of each item
 
-//        Scanner scanner = new Scanner(System.in);
-//        int n = scanner.nextInt(); // Number of items
-//        int W = scanner.nextInt(); // Max weight capacity
-//        int[] weights, values; // weight[i], value[i]
-        int[] values = {1, 2, 3};
-        int[] weights = {4, 5, 1};
-        int W = 4;
+        // Obtain weight and value of each item x_i
+        for (int i = 1; i <= n; i++) {
+            weights[i] = in.nextInt();
+            values[i] = in.nextInt();
+        }
 
-        System.out.println(knapsack(W, values, weights));
+        System.out.println(knapsack(n, m, weights, values));
     }
 }
