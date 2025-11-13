@@ -28,18 +28,19 @@ class Greedy01 {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int n = in.nextInt(); // Num of items
-        int m = in.nextInt(); // Weight capacity
-        int[] weights = new int[n]; // Weights of each item
-        int[] values = new int[n]; // Values of each item
+        Scanner scanner = new Scanner(System.in);
 
-        // Obtain weight and value of each item x_i
+        int n = scanner.nextInt(); // number of items
+        int c = scanner.nextInt(); // knapsack capacity
+        int[] weights = new int[n];
+        int[] values = new int[n];
+
+        // Read weight and value for each item
         for (int i = 0; i < n; i++) {
-            weights[i] = in.nextInt();
-            values[i] = in.nextInt();
+            weights[i] = scanner.nextInt();
+            values[i] = scanner.nextInt();
         }
 
-        System.out.println(knapsack(n, m, weights, values));
+        System.out.println(knapsack(n, c, weights, values));
     }
 }
