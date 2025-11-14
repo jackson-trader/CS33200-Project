@@ -1,30 +1,13 @@
 import java.util.*;
 
 class Greedy01 {
-    static double knapsack(int n, int m, int[] weights, int[] values) {
-        Double[] ratios = new Double[n];
-        for (int i = 0; i < n; i++) {
-            ratios[i] = (double) values[i] / weights[i];
+
+    public record Item(int weight, int value, double ratio) implements Comparable<Item> {
+        @Override
+        public int compareTo(Item otherItem) {
+            // Descending ratios
+            return Double.compare(otherItem.ratio(), this.ratio());
         }
-
-        // Sort ratios in descending
-        Arrays.sort(ratios, Collections.reverseOrder());
-
-        int remainingWeight = 0; // Remaining weight in knapsack after gradually filling it
-        double totalValue = 0.0; // Value in knapsack after filling it up
-        boolean[] takenItems = new boolean[n]; // Track items that are taken
-
-        for (int i = 0; i < n; i++) {
-            // If item with the highest ratio can fit in knapsack, then grab it
-            if (weights[i] <= remainingWeight) {
-                // Take item
-                takenItems[i] = true;
-                remainingWeight -= weights[i];
-                totalValue += values[i];
-            }
-        }
-
-        return totalValue;
     }
 
     public static void main(String[] args) {
@@ -41,6 +24,32 @@ class Greedy01 {
             values[i] = scanner.nextInt();
         }
 
-        System.out.println(knapsack(n, c, weights, values));
+        System.out.format("%.2f\n", knapsack(n, c, weights, values));
+    }
+
+    static double knapsack(int n, int m, int[] weights, int[] values) {
+        Item[] items = new Item[n];
+        for (int i = 0; i < n; i++) {
+            items[i] = new Item(weights[i], values[i], (double) values[i] / weights[i]);
+        }
+
+        // Sort ratios of items in descending
+        Arrays.sort(items);
+
+        int remainingWeight = m; // Remaining weight in knapsack after gradually filling it
+        int totalValue = 0; // Value in knapsack after filling it up
+
+        for (int i = 0; i < n && remainingWeight > 0; i++) {
+            Item currentItem = items[i];
+
+            // If item with the highest ratio can fit in knapsack, then grab it
+            if (currentItem.weight() <= remainingWeight) {
+                // Take item and update parameters
+                remainingWeight -= currentItem.weight();
+                totalValue += currentItem.value();
+            }
+        }
+
+        return totalValue;
     }
 }

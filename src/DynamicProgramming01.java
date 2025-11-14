@@ -26,18 +26,19 @@ class DynamicProgramming01 {
             for (int w = 1; w <= c; w++) { // w = current capacity
                 int currentItem = i - 1; // to make indexing easier
 
-                // If current item fits in knapsack decide to grab or skip it
-                if (weights[currentItem] <= w) {
+                // If current item doesn't fit in current capacity considered
+                if (weights[currentItem] > w) {
+                    dp[i][w] = dp[i - 1][w]; // just copy from previous row, item doesn't fit
+                } else {
+                    // Current item fits in knapsack, decide to skip or grab it
                     int remaining = w - weights[currentItem]; // remaining capacity
 
-                    // Previous row (don't take item)
+                    // Previous row (don't grab item)
                     int skipItem = dp[i - 1][w];
-                    // Previous row at remaining capacity + value of current item
+                    // Previous row at remaining capacity + value of current item (grab item)
                     int grabItem = dp[i - 1][remaining] + values[currentItem];
 
                     dp[i][w] = Math.max(skipItem, grabItem);
-                } else {
-                    dp[i][w] = dp[i - 1][w]; // just copy from previous row
                 }
             }
         }
