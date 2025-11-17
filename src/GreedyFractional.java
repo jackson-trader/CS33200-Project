@@ -27,7 +27,7 @@ class GreedyFractional {
         System.out.format("%.2f\n", knapsack(n, c, weights, values));
     }
 
-    static double knapsack(int n, int m, int[] weights, int[] values) {
+    static double knapsack(int n, int c, int[] weights, int[] values) {
         Item[] items = new Item[n];
         for (int i = 0; i < n; i++) {
             items[i] = new Item(weights[i], values[i], (double) values[i] / weights[i]);
@@ -36,21 +36,25 @@ class GreedyFractional {
         // Sort ratios of items in descending
         Arrays.sort(items);
 
-        int remainingWeight = m; // Remaining weight in knapsack after gradually filling it
+        int remainingWeight = c; // Remaining weight in knapsack
         double totalValue = 0.0; // Value in knapsack after filling it up
 
-        for (int i = 0; i < n && remainingWeight > 0; i++) {
+        for (int i = 0; i < n; i++) {
+            // Base case
+            if (remainingWeight == 0) break;
+
             Item currentItem = items[i];
 
             // If item with the highest ratio can fit in knapsack, then grab it
             if (currentItem.weight() <= remainingWeight) {
-                // Take item and update parameters
+                // Take item and update variables
                 remainingWeight -= currentItem.weight();
                 totalValue += currentItem.value();
             } else {
                 // Cut highest-ratio item into fraction, so you can still grab it (only occurs at end)
                 double fraction = (double) remainingWeight / currentItem.weight();
                 totalValue += fraction * currentItem.value();
+                remainingWeight = 0;
             }
         }
 
