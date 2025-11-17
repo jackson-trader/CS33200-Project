@@ -22,6 +22,7 @@ class DynamicProgramming01 {
     static int knapsack(int n, int c, int[] weights, int[] values) {
         int[][] dp = new int[n + 1][c + 1];
 
+        // Generating the 2D dp array to solve the problem
         for (int i = 1; i <= n; i++) { // i = how many items considered
             for (int w = 1; w <= c; w++) { // w = current capacity
                 int currentItem = i - 1; // to make indexing easier
@@ -42,6 +43,21 @@ class DynamicProgramming01 {
                 }
             }
         }
+
+        ArrayList<Integer> itemsGrabbed = new ArrayList<>();
+        int w = c;
+
+        // Backtrack the dp array in order to figure out which items were grabbed
+        for (int i = n; i > 0; i--) {
+            // i = current item
+            if (dp[i][w] != dp[i - 1][w]) {
+                // Grab item
+                itemsGrabbed.add(i);
+                w -= weights[i - 1];
+            }
+        }
+
+        System.out.println("Items grabbed: " + itemsGrabbed);
 
         return dp[n][c];
     }
