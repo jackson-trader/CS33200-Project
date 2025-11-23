@@ -52,12 +52,12 @@ class DynamicProgramming01 {
             // i = current item
             if (dp[i][w] != dp[i - 1][w]) {
                 // Grab item
-                itemsGrabbed.add(i);
+                itemsGrabbed.add(i - 1);
                 w -= weights[i - 1];
             }
         }
 
-        System.out.println("Items grabbed: " + itemsGrabbed);
+        System.out.println("Items grabbed (0-index based): " + itemsGrabbed);
 
         return dp[n][c];
     }

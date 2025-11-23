@@ -2,7 +2,7 @@ import java.util.*;
 
 class GreedyFractional {
 
-    public record Item(int weight, int value, double ratio) implements Comparable<Item> {
+    public record Item(int weight, int value, double ratio, int originalIndex) implements Comparable<Item> {
         @Override
         public int compareTo(Item otherItem) {
             // Descending ratios
@@ -30,7 +30,7 @@ class GreedyFractional {
     static double knapsack(int n, int c, int[] weights, int[] values) {
         Item[] items = new Item[n];
         for (int i = 0; i < n; i++) {
-            items[i] = new Item(weights[i], values[i], (double) values[i] / weights[i]);
+            items[i] = new Item(weights[i], values[i], (double) values[i] / weights[i], i);
         }
 
         // Sort ratios of items in descending
@@ -38,6 +38,8 @@ class GreedyFractional {
 
         int remainingWeight = c; // Remaining weight in knapsack
         double totalValue = 0.0; // Value in knapsack after filling it up
+
+        ArrayList<String> itemsGrabbed = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
             // Base case
@@ -50,13 +52,17 @@ class GreedyFractional {
                 // Take item and update variables
                 remainingWeight -= currentItem.weight();
                 totalValue += currentItem.value();
+                itemsGrabbed.add(String.format("1 of item %d", currentItem.originalIndex()));
             } else {
                 // Cut highest-ratio item into fraction, so you can still grab it (only occurs at end)
                 double fraction = (double) remainingWeight / currentItem.weight();
                 totalValue += fraction * currentItem.value();
                 remainingWeight = 0;
+                itemsGrabbed.add(String.format("%.2f of item %d", fraction, currentItem.originalIndex()));
             }
         }
+
+        System.out.println("Items grabbed (0-index based): " + itemsGrabbed);
 
         return totalValue;
     }
